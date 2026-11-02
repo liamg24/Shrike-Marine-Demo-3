@@ -98,7 +98,8 @@
   // or across the top (phones). The clip's background is pure black, so no edge shows.
   function perchRect() {
     if (wide) {
-      const h = 0.5 * H;                        // bird ≈ half the screen height
+      // bird ≈ 56% of the screen height (keep in step with .hero__sightline in site.css)
+      const h = 0.58 * H;
       const w = h * SRC_W / SRC_H;
       return { x: W - w, y: 0.55 * H - WIRE_Y * h, w, h };
     }
@@ -223,6 +224,17 @@
     gsap.ticker.lagSmoothing(0);
   }
 
+  // In-page links (#products, #contact, #solutions…) glide to their section.
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      if (lenis) lenis.scrollTo(target, { duration: 1.4 });
+      else target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  });
+
   /* ---------- Scroll timeline (DOM layers; the canvas reads `scrolled`) ---------- */
 
   const tl = gsap.timeline({
@@ -242,6 +254,7 @@
 
   tl.fromTo('.hud__fill', { scaleX: 0 }, { scaleX: 1, duration: C }, 0)
     .to('.hero__copy', { autoAlpha: 0, y: reduceMotion ? 0 : -48, duration: A + 0.05, ease: 'power1.in' }, 0)
+    .to('.hero__sightline', { autoAlpha: 0, duration: A * 0.6 }, 0)
     .to('.hero__brand', { autoAlpha: 0, duration: A }, 0.05)
     .to('.hero__scrim', { autoAlpha: 0, duration: 0.15 }, B)
     .to('.hero__hud', { autoAlpha: 0, duration: 0.15 }, B)
@@ -313,7 +326,7 @@
       dragging = true; moved = false;
       dragX = e.clientX; dragLeft = track.scrollLeft;
       gallery.classList.add('is-dragging');
-      track.setPointerCapture(e.pointerId);
+      try { track.setPointerCapture(e.pointerId); } catch (_) { /* drag still works without capture */ }
     });
     track.addEventListener('pointermove', (e) => {
       if (!dragging) return;
