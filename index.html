@@ -52,20 +52,44 @@
         <span class="hud__status"><span class="status-dot"></span>Cape Town &nbsp;33.92° S&nbsp; 18.42° E</span>
         <span class="hud__scroll">Scroll <span class="hud__track"><span class="hud__fill"></span></span></span>
       </div>
-
-      <div class="hero__fade" aria-hidden="true"></div>
     </div>
   </section>
 
+  <!-- About: follows straight out of the hero, on the same black -->
   <section id="about" class="about" aria-labelledby="about-title">
     <div class="wrap">
-      <p class="eyebrow" data-inview>About &nbsp;·&nbsp; Customer focus</p>
-      <h2 id="about-title" class="about__lead" data-inview>
+      <p class="eyebrow eyebrow--center" data-inview data-inview-early>About Shrike Marine</p>
+      <h2 id="about-title" class="about__statement" data-inview data-inview-early>
+        Shrike Marine, founded in South Africa with the objective of providing specialized
+        electronic hardware solutions, has expanded in areas of high frequency, power supply
+        and power distribution primarily for military, commercial, marine and aviation use.
+      </h2>
+
+      <ul class="sectors" aria-label="Sectors served" data-inview>
+        <li>Military</li>
+        <li>Commercial</li>
+        <li>Marine</li>
+        <li>Aviation</li>
+      </ul>
+
+      <dl class="stats" data-inview>
+        <div><dt>2005</dt><dd>Founded</dd></div>
+        <div><dt>Cape Town</dt><dd>South Africa</dd></div>
+        <div><dt>ISO 9001</dt><dd>Certified</dd></div>
+        <div><dt>Low → High</dt><dd>Production volumes</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="focus" class="focus" aria-labelledby="focus-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--center" data-inview>Customer focus</p>
+      <h2 id="focus-title" class="section-title section-title--center" data-inview>
         Shrike Marine is a flexible design house that is able to rapidly put together
         prototypes for integration into our clients’ systems.
       </h2>
 
-      <div class="about__body">
+      <div class="focus__body">
         <p data-inview>
           We also have the experience to put these prototypes through qualification and the
           facilities at our disposal to deliver the production items. Shrike Marine is able to
@@ -88,12 +112,102 @@
         </p>
       </div>
 
-      <dl class="facts" data-inview>
-        <div><dt>Prototype</dt><dd>Rapid design &amp; integration</dd></div>
-        <div><dt>Qualify</dt><dd>Taken through qualification</dd></div>
-        <div><dt>Produce</dt><dd>Low to high volume</dd></div>
-        <div><dt>Certified</dt><dd>ISO 9001</dd></div>
-      </dl>
+      <ol class="process" data-inview aria-label="From prototype to production">
+        <li><span class="process__step">01</span><span class="process__name">Prototype</span><span class="process__note">Rapid design &amp; integration</span></li>
+        <li><span class="process__step">02</span><span class="process__name">Qualify</span><span class="process__note">Taken through qualification</span></li>
+        <li><span class="process__step">03</span><span class="process__name">Produce</span><span class="process__note">Low to high volume</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="services" class="services" aria-labelledby="services-title">
+    <div class="wrap services__grid">
+      <div class="services__intro">
+        <p class="eyebrow" data-inview>What we do</p>
+        <h2 id="services-title" class="section-title" data-inview>From design to support, under one roof.</h2>
+        <p class="services__lede" data-inview>
+          The breadth of our solutions covers the full life of a system — and, as an adjunct,
+          Shrike Marine manufactures high quality handmade internal and external cable harnessing
+          assemblies for use in aviation, defence, marine and vehicle systems.
+        </p>
+      </div>
+      <ul class="services__list">
+        <li data-inview><span class="services__idx">01</span><h3>Product &amp; system design</h3></li>
+        <li data-inview><span class="services__idx">02</span><h3>Equipment &amp; component procurement</h3></li>
+        <li data-inview><span class="services__idx">03</span><h3>Sub-system integration &amp; testing</h3></li>
+        <li data-inview><span class="services__idx">04</span><h3>Training &amp; maintenance support</h3></li>
+        <li data-inview><span class="services__idx">05</span><h3>Handmade cable harnessing</h3></li>
+        <li data-inview><span class="services__idx">06</span><h3>Research &amp; development</h3></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Product gallery: swipe / drag / arrow buttons. Captions come from the image filenames. -->
+  <section id="products" class="gallery" aria-labelledby="gallery-title">
+    <div class="wrap gallery__head">
+      <div>
+        <p class="eyebrow" data-inview>In the field</p>
+        <h2 id="gallery-title" class="section-title" data-inview>Products &amp; systems</h2>
+      </div>
+      <div class="gallery__controls" data-inview>
+        <span class="gallery__count" aria-live="polite"><span class="gallery__current">01</span> / <span class="gallery__total">07</span></span>
+        <button class="gallery__btn" type="button" data-dir="-1" aria-label="Previous image">←</button>
+        <button class="gallery__btn" type="button" data-dir="1" aria-label="Next image">→</button>
+      </div>
+    </div>
+
+    <div class="gallery__track" tabindex="0" role="region" aria-label="Product images — scroll sideways">
+      <figure class="slide">
+        <img src="assets/products/automated-cable-tester.webp" alt="Automated cable tester with Shrike Marine start-up screen" width="1152" height="457" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">01</span>Automated Cable Tester</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/products/external-mil-c-connector.webp" alt="Face of an eight-pin external MIL-C circular connector" width="1152" height="462" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">02</span>External MIL-C Connector</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/products/harnessing-on-apcdu.webp" alt="Labelled cable harnesses connected to an APCDU unit" width="1150" height="452" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">03</span>Harnessing on APCDU</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/products/missile-safety-system.webp" alt="Missile safety system: chief safety officer unit, displays and cabling set up outdoors" width="1157" height="460" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">04</span>Missile Safety System</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/products/missile-safety-system-in-use.webp" alt="Missile safety system in use during a live firing" width="1016" height="405" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">05</span>Missile Safety System in Use</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/products/speaker-box.webp" alt="Three speaker box units with connectors and controls" width="1165" height="461" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">06</span>Speaker Box</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/products/uav-power-distribution-system.webp" alt="Finned UAV power distribution unit with circular connectors" width="1167" height="471" loading="lazy" decoding="async" draggable="false">
+        <figcaption><span class="slide__idx">07</span>UAV Power Distribution System</figcaption>
+      </figure>
+    </div>
+
+    <div class="wrap">
+      <div class="gallery__bar" aria-hidden="true"><span class="gallery__fill"></span></div>
+    </div>
+  </section>
+
+  <!-- Video: a still and play button; the YouTube player only loads when someone clicks play -->
+  <section id="video" class="film" aria-labelledby="film-title">
+    <div class="wrap">
+      <div class="film__head">
+        <p class="eyebrow" data-inview>See it working</p>
+        <h2 id="film-title" class="section-title" data-inview>Shrike Marine Cable Tester</h2>
+      </div>
+      <div class="film__frame" data-inview>
+        <button class="film__play" type="button" data-yt="S_xxDNX6XaA" data-start="2" aria-label="Play video: Shrike Marine Cable Tester">
+          <img src="https://i.ytimg.com/vi/S_xxDNX6XaA/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
+          <span class="film__icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <p class="film__note" data-inview>
+        <a href="https://www.youtube.com/watch?v=S_xxDNX6XaA&amp;t=2s" target="_blank" rel="noopener">Watch on YouTube <span aria-hidden="true">↗</span></a>
+      </p>
     </div>
   </section>
 
@@ -126,11 +240,29 @@
           <span class="sol__idx">09</span><span class="sol__name">Harnessing Automated Tester</span><span class="sol__tag">Test equipment</span><span class="sol__go" aria-hidden="true">→</span></a></li>
       </ol>
 
-      <p class="solutions__foot" data-inview>
-        Need something not listed? <a href="mailto:sales@shrikemarine.com?subject=Enquiry%20via%20shrikemarine.com">sales@shrikemarine.com</a>
-      </p>
     </div>
   </section>
+
+  <footer id="contact" class="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--center" data-inview>Contact</p>
+      <h2 id="contact-title" class="section-title section-title--center" data-inview>
+        Working in a demanding environment? Let’s talk.
+      </h2>
+      <div class="contact__actions" data-inview>
+        <a class="btn btn--primary" href="mailto:sales@shrikemarine.com?subject=Enquiry%20via%20shrikemarine.com">sales@shrikemarine.com</a>
+      </div>
+      <ul class="contact__lines" data-inview>
+        <li><a href="tel:+27214476877">+27 (0)21 447 6877</a></li>
+        <li><a href="tel:+27720960854">+27 (0)72 096 0854</a></li>
+        <li>Cape Town, South Africa</li>
+      </ul>
+      <div class="contact__base">
+        <span class="wordmark">Shrike Marine</span>
+        <span>ISO 9001 certified &nbsp;·&nbsp; © <span class="js-year">2026</span> Shrike Marine</span>
+      </div>
+    </div>
+  </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

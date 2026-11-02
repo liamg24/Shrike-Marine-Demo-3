@@ -3,8 +3,8 @@
    1. Intro (time-based): the bird flies in full-bleed, the camera pulls back as it lands,
       and the copy comes up once it is on the wire.
    2. Scroll (scrubbed): it turns to face the viewer, swoops at the camera (the frame grows
-      back to full-bleed) and passes overhead, then the hero fades to black.
-   3. About and solutions content fades in as it enters. */
+      back to full-bleed) and passes overhead; the bare wire scrolls away into the next section.
+   3. Section content fades in as it enters; the product gallery swipes sideways. */
 (() => {
   const hero = document.querySelector('.hero');
   if (!hero) return;
@@ -15,8 +15,9 @@
 
   /* ---------- Clip ---------- */
 
-  // 141 frames (f000–f140), 24 fps, 1280×720, KlingAI watermark painted out.
-  const FRAME_COUNT = 141;
+  // Frames f000–f141 are used (f142–f144 repeat the bare wire), 24 fps, 1280×720,
+  // KlingAI watermark painted out.
+  const FRAME_COUNT = 142;
   const FPS = 24;
   const SRC_W = 1280;
   const SRC_H = 720;
@@ -29,7 +30,7 @@
     turn: 70,     // starts turning to face the viewer
     lift: 102,    // leaves the wire
     full: 124,    // open wings fill the frame
-    end: 140,     // last frame with the bird in it
+    end: 141,     // first frame with the bird gone: bare wire; the hero lets go here
   };
 
   // In the source frame the wire sits at 53% height and the perched bird is centred at 67% width.
@@ -39,14 +40,14 @@
   // Scroll distance for each stage, in screen heights. Smaller = faster.
   //   hold   bird stays perched while the copy clears
   //   turn   turns to face the viewer
-  //   swoop  launches at the camera and passes overhead
-  //   black  fade to black before the About section
-  const SCROLL = { hold: 0.25, turn: 0.3, swoop: 0.8, black: 0.2 };
+  //   swoop  launches at the camera and passes overhead; the hero lets go as soon as
+  //          the bird is out of frame, so the About section follows straight on
+  const SCROLL = { hold: 0.25, turn: 0.3, swoop: 0.8 };
 
   const A = SCROLL.hold;
   const B = A + SCROLL.turn;
   const C = B + SCROLL.swoop;
-  const END = C + SCROLL.black;
+  const END = C;
   hero.style.setProperty('--runway', END);
 
   /* ---------- Frame loading ---------- */
@@ -81,7 +82,7 @@
   /* ---------- Layout ---------- */
 
   let W = 0, H = 0, dpr = 1, wide = false;
-  const wideQuery = window.matchMedia('(min-width: 900px) and (min-aspect-ratio: 1/1)');
+  const wideQuery = window.matchMedia('(min-width: 640px) and (min-aspect-ratio: 1/1) and (min-height: 480px)');
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -101,7 +102,7 @@
       const w = h * SRC_W / SRC_H;
       return { x: W - w, y: 0.55 * H - WIRE_Y * h, w, h };
     }
-    const w = Math.min(1.3 * W, 0.84 * H);
+    const w = Math.min(1.15 * W, 0.84 * H);
     const h = w * SRC_H / SRC_W;
     // centre the bird, but never let the wire stop short of the right edge
     const x = Math.max(0.5 * W - BIRD_X * w, W - w);
@@ -244,12 +245,13 @@
     .to('.hero__brand', { autoAlpha: 0, duration: A }, 0.05)
     .to('.hero__scrim', { autoAlpha: 0, duration: 0.15 }, B)
     .to('.hero__hud', { autoAlpha: 0, duration: 0.15 }, B)
-    .to('.hero__fade', { autoAlpha: 1, duration: SCROLL.black * 0.85, ease: 'power2.in' }, C)
     .set({}, {}, END);
 
-  /* ---------- About / solutions: reveal on enter ---------- */
+  /* ---------- Sections: reveal on enter ---------- */
 
   gsap.utils.toArray('[data-inview]').forEach((el) => {
+    // the About statement starts as soon as it peeks in, while the bare wire is still up
+    const start = el.hasAttribute('data-inview-early') ? 'top 100%' : 'top 88%';
     gsap.fromTo(el,
       { autoAlpha: 0, y: reduceMotion ? 0 : 18 },
       {
@@ -257,9 +259,104 @@
         y: 0,
         duration: reduceMotion ? 0.4 : 0.8,
         ease: 'power2.out',
-        scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        scrollTrigger: { trigger: el, start, once: true },
       });
   });
+
+  /* ---------- Product gallery ---------- */
+
+  const gallery = document.querySelector('.gallery');
+  if (gallery) {
+    const track = gallery.querySelector('.gallery__track');
+    const slides = [...track.querySelectorAll('.slide')];
+    const prev = gallery.querySelector('[data-dir="-1"]');
+    const next = gallery.querySelector('[data-dir="1"]');
+    const current = gallery.querySelector('.gallery__current');
+    const fill = gallery.querySelector('.gallery__fill');
+    gallery.querySelector('.gallery__total').textContent = String(slides.length).padStart(2, '0');
+
+    const step = () => slides[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap || 0);
+    const indexNow = () => Math.round(track.scrollLeft / step());
+
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const max = track.scrollWidth - track.clientWidth;
+      const atEnd = track.scrollLeft >= max - 2;
+      const i = atEnd ? slides.length - 1 : Math.min(slides.length - 1, indexNow());
+      slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+      current.textContent = String(i + 1).padStart(2, '0');
+      fill.style.transform = `scaleX(${max > 0 ? track.scrollLeft / max : 1})`;
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = atEnd;
+    }
+    track.addEventListener('scroll', () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+
+    const go = (dir) => track.scrollTo({
+      left: (indexNow() + dir) * step(),
+      behavior: reduceMotion ? 'auto' : 'smooth',
+    });
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    track.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    });
+
+    // Drag to swipe with a mouse (touch and trackpads already scroll natively).
+    let dragX = 0, dragLeft = 0, dragging = false, moved = false;
+    track.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      dragging = true; moved = false;
+      dragX = e.clientX; dragLeft = track.scrollLeft;
+      gallery.classList.add('is-dragging');
+      track.setPointerCapture(e.pointerId);
+    });
+    track.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - dragX;
+      if (Math.abs(dx) > 3) moved = true;
+      track.scrollLeft = dragLeft - dx;
+    });
+    let snapBack = 0;
+    const endDrag = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      // a deliberate drag (> 40px) moves one slide that way; a small one settles back
+      const dx = e.clientX - dragX;
+      const from = Math.round(dragLeft / step());
+      const to = Math.abs(dx) > 40 ? from + (dx < 0 ? 1 : -1) : from;
+      const i = Math.max(0, Math.min(slides.length - 1, to));
+      track.scrollTo({ left: i * step(), behavior: reduceMotion ? 'auto' : 'smooth' });
+      // turn snapping back on only once the slide has settled, or it fights the scroll
+      clearTimeout(snapBack);
+      snapBack = setTimeout(() => gallery.classList.remove('is-dragging'), reduceMotion ? 0 : 500);
+    };
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+
+    update();
+  }
+
+  /* ---------- Video: load the YouTube player on click ---------- */
+
+  document.querySelectorAll('.film__play').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      const params = new URLSearchParams({ start: btn.dataset.start || '0', autoplay: '1', rel: '0', playsinline: '1' });
+      iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.yt}?${params}`;
+      iframe.title = btn.getAttribute('aria-label').replace(/^Play video: /, '');
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      btn.replaceWith(iframe);
+    }, { once: true });
+  });
+
+  const year = document.querySelector('.js-year');
+  if (year) year.textContent = new Date().getFullYear();
 
   /* ---------- Start ---------- */
 
